@@ -5,6 +5,7 @@ It is repository that stores functions for making decisions.
 https://github.com/tomohiko9090/my-visualization-function  
 <br>
 
-1. data_cheacker:
-    - 特徴的なサンプルサイズをチェックする関数
-    - ![スクリーンショット 0003-12-16 午後11 22 01](https://user-images.githubusercontent.com/66200485/146389247-1d665269-1e90-4d72-9501-f5f7e8c7b25d.png)
+1. data_counter:
+    - サンプルサイズをチェックする関数
+    - <img width="255" alt="スクリーンショット 0003-12-21 午後4 39 08" src="https://user-images.githubusercontent.com/66200485/146890291-a453b075-813f-47fc-a7e1-bde257933fce.png">
+
