@@ -7,7 +7,6 @@ from sklearn.linear_model import LinearRegression, mean_absolute_error, mean_squ
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 
-
 class MultipleRegresstion:
 
   def __init__(self, table, target, normalize=False):
@@ -76,7 +75,7 @@ class MultipleRegresstion:
 
     pred_train = lreg.predict(X_train)
     pred_test = lreg.predict(X_test)
-
+    
     print(f"\n1. MAE 平均絶対誤差")
     print(f"X_trainを使ったモデル: {mean_absolute_error(Y_train, pred_train):0.3f}")
     print(f"X_testを使ったモデル: {mean_absolute_error(Y_test, pred_test):0.3f}")
