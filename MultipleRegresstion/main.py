@@ -56,7 +56,7 @@ class MultipleRegresstion:
     coeff_df["p-value"] = p_value_list
 
     print(f"自由度調整済み決定係数: {round(result.rsquared_adj, 3)}")
-    print(f"AIC: {round(result.aic)}")
+    print(f"AIC: {round(result.aic, 2)}")
     print(coeff_df, "\n")
    
     print("--- 2. 予測精度 ---")
@@ -108,7 +108,7 @@ class MultipleRegresstion:
     ax.spines['bottom'].set_color(gray)
     ax.tick_params(left=True, labelsize=6)
     
-  def search_features_regresstion(self, feature_name_list:list=False):
+  def search_features_regresstion(self, feature_name_list:list=False, avoid_overtraining:int=False, avoid_multicollinearity:bool=False):
     
     if feature_name_list:
       table = self.table.rename(columns=dict(zip(self.table.columns[1:], feature_name_list)))
@@ -117,7 +117,10 @@ class MultipleRegresstion:
 
     # 1. 全組み合わせを作成
     result = []
-    for n in range(1, len(table.drop(self.target, 1).columns)+1):
+    feature_num = len(table.drop(self.target, 1).columns)
+    if avoid_overtraining:
+      feature_num = avoid_overtraining
+    for n in range(1, feature_num+1):
       for conb in itertools.combinations(table.drop(self.target, 1).columns, n):
           result.append(list(conb))
    
@@ -132,7 +135,6 @@ class MultipleRegresstion:
 
       if self.normalize == "standardization": # 普通の分散を使う
         X_multi = (X_multi - X_multi.mean()) / X_multi.std(ddof=0) 
-        # Y_target = (Y_target - Y_target.mean()) / Y_target.std(ddof=0)
 
       if self.normalize == "min-max-scaling": # 最大値が1, 最小値が0になるように正規化
         X_multi = X_multi.apply(lambda x: (x - np.min(x)) / (np.max(x) - np.min(x)))
@@ -163,6 +165,9 @@ class MultipleRegresstion:
     all_result_df = all_result_df.replace(np.nan, '')
     all_result_df = all_result_df.sort_values('AIC', ascending=True)
     all_result_df = all_result_df.drop(["AIC, r2_score"], 1)
+
+    if avoid_multicollinearity:
+      all_result_df = all_result_df[all_result_df.VIF_max < 10] # VIF_maxが10以上のモデルは削除
       
     # 7. 完成したデータフレームをreturn
     return all_result_df.reset_index(drop=True)
