@@ -49,10 +49,10 @@ def t_teat(data1, data2, one_to_one=True):
 
     if round(two_sided_pval, 4) >= 0.05:
       print("と、p > 0.05なので、帰無仮説は棄却されず、2群間は等分散であること(少なくとも不等分散でないこと)が示唆された。")
-      print("\n---ステップ2---\n次に本題の対立仮説 : 「2群間の平均値に差がない」についてStudentのt検定")
+      print("\n---ステップ2---\n次に本題の帰無仮説 : 「2群間の平均値に差がない」についてStudentのt検定")
       answer = stats.ttest_ind(A, B)
       print('p-value: ', round(answer.pvalue, 4))
       if answer.pvalue < 0.05:
         print("と、p < 0.05と有意水準以下であるため、「2群間の平均値に差がない」の帰無仮説は棄却された。")
       else:
-        print("と、p > 0.05と有意水準を満たしていないため、対立仮説棄却ならず。")
+        print("と、p > 0.05と有意水準を満たしていないため、帰無仮説棄却ならず。")
