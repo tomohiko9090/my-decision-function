@@ -61,6 +61,27 @@ class MultipleRegresstion:
    
     print("--- 2. 予測精度 ---")
     print("パラメータの信頼性を判断する")
+
+    loo = LeaveOneOut()
+
+    X = X_multi.reset_index().values
+    y = Y_target.reset_index().values
+    lreg = LinearRegression()
+
+    loo_result_list = []
+    for train_index, test_index in loo.split(X):
+
+      X_train, X_test = X[train_index], X[test_index]
+      y_train, y_test = y[train_index], y[test_index]
+
+      lreg = LinearRegression()
+      lreg.fit(X_train, y_train)
+      pred_test = lreg.predict(X_test)
+      rmse = np.sqrt(mean_squared_error(y_test, pred_test))
+      loo_result_list.append(rmse)
+
+    print(f"\n1. LeaveOneOut（RMSEの平均値）: {round(np.mean(loo_result_list), 3)}\n")
+
     if test_size:
       X_train, X_test, Y_train, Y_test = sklearn.model_selection.train_test_split(X_multi, Y_target, test_size=test_size)
 
@@ -69,22 +90,21 @@ class MultipleRegresstion:
 
     print(f"学習用のデータ数 -> {len(X_train)}")
     print(f"検証用のデータ数 -> {len(X_test)}")
-
     lreg = LinearRegression()
     lreg.fit(X_train, Y_train)
 
     pred_train = lreg.predict(X_train)
     pred_test = lreg.predict(X_test)
     
-    print(f"\n1. MAE 平均絶対誤差")
+    print(f"\n2. MAE 平均絶対誤差")
     print(f"X_trainを使ったモデル: {mean_absolute_error(Y_train, pred_train):0.3f}")
     print(f"X_testを使ったモデル: {mean_absolute_error(Y_test, pred_test):0.3f}")
 
-    print(f"\n2. MSE 平均二乗誤差")
+    print(f"\n3. MSE 平均二乗誤差")
     print(f"X_trainを使ったモデル: {mean_squared_error(Y_train, pred_train):0.3f}")
     print(f"X_testを使ったモデル: {mean_squared_error(Y_test, pred_test):0.3f}")
     
-    print(f"\n3. RMSE 平均二乗誤差の平方根")
+    print(f"\n4. RMSE 平均二乗誤差の平方根")
     print(f"X_trainを使ったモデル: {np.sqrt(mean_squared_error(Y_train, pred_train)):0.3f}")
     print(f"X_testを使ったモデル: {np.sqrt(mean_squared_error(Y_test, pred_test)):0.3f}")
     
@@ -165,9 +185,10 @@ class MultipleRegresstion:
     all_result_df = all_result_df.replace(np.nan, '')
     all_result_df = all_result_df.sort_values('AIC', ascending=True)
     all_result_df = all_result_df.drop(["AIC, r2_score"], 1)
+    all_result_df = all_result_df.reindex(columns=["AIC", "r2_score", "VIF_max"]+feature_name_list)
 
     if avoid_multicollinearity:
       all_result_df = all_result_df[all_result_df.VIF_max < 10] # VIF_maxが10以上のモデルは削除
-      
+  
     # 7. 完成したデータフレームをreturn
     return all_result_df.reset_index(drop=True)
