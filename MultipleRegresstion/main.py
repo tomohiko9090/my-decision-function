@@ -185,7 +185,7 @@ class MultipleRegresstion:
     all_result_df = all_result_df.replace(np.nan, '')
     all_result_df = all_result_df.sort_values('AIC', ascending=True)
     all_result_df = all_result_df.drop(["AIC, r2_score"], 1)
-    all_result_df = all_result_df.reindex(columns=["AIC", "r2_score", "VIF_max"]+feature_name_list)
+    all_result_df = all_result_df.reindex(columns=["AIC", "r2_score", "VIF_max"]+list(table.drop(self.target, 1).columns))
 
     if avoid_multicollinearity:
       all_result_df = all_result_df[all_result_df.VIF_max < 10] # VIF_maxが10以上のモデルは削除
