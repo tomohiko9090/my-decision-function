@@ -77,10 +77,10 @@ class MultipleRegresstion:
       lreg = LinearRegression()
       lreg.fit(X_train, y_train)
       pred_test = lreg.predict(X_test)
-      rmse = np.sqrt(mean_squared_error(y_test, pred_test))
-      loo_result_list.append(rmse)
+      mae = mean_absolute_error(y_test, pred_test)
+      loo_result_list.append(mae)
 
-    print(f"\n1. LeaveOneOut（RMSEの平均値）: {round(np.mean(loo_result_list), 3)}\n")
+    print(f"\n1. LeaveOneOut（MAEの平均値）: {round(np.mean(loo_result_list), 3)}\n")
 
     if test_size:
       X_train, X_test, Y_train, Y_test = sklearn.model_selection.train_test_split(X_multi, Y_target, test_size=test_size)
