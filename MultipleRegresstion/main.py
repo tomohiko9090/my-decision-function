@@ -77,10 +77,10 @@ class MultipleRegresstion:
       lreg = LinearRegression()
       lreg.fit(X_train, y_train)
       pred_test = lreg.predict(X_test)
-      rmse = np.sqrt(mean_squared_error(y_test, pred_test))
-      loo_result_list.append(rmse)
+      mae = mean_absolute_error(y_test, pred_test)
+      loo_result_list.append(mae)
 
-    print(f"\n1. LeaveOneOut（RMSEの平均値）: {round(np.mean(loo_result_list), 3)}\n")
+    print(f"\n1. LeaveOneOut（MAEの平均値）: {round(np.mean(loo_result_list), 3)}\n")
 
     if test_size:
       X_train, X_test, Y_train, Y_test = sklearn.model_selection.train_test_split(X_multi, Y_target, test_size=test_size)
@@ -185,7 +185,7 @@ class MultipleRegresstion:
     all_result_df = all_result_df.replace(np.nan, '')
     all_result_df = all_result_df.sort_values('AIC', ascending=True)
     all_result_df = all_result_df.drop(["AIC, r2_score"], 1)
-    all_result_df = all_result_df.reindex(columns=["AIC", "r2_score", "VIF_max"]+feature_name_list)
+    all_result_df = all_result_df.reindex(columns=["AIC", "r2_score", "VIF_max"]+list(table.drop(self.target, 1).columns))
 
     if avoid_multicollinearity:
       all_result_df = all_result_df[all_result_df.VIF_max < 10] # VIF_maxが10以上のモデルは削除
